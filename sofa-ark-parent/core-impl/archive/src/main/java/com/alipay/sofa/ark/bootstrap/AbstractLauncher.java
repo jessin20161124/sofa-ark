@@ -20,7 +20,6 @@ import com.alipay.sofa.ark.loader.jar.JarFile;
 import com.alipay.sofa.ark.spi.archive.ContainerArchive;
 import com.alipay.sofa.ark.spi.archive.ExecutableArchive;
 import com.alipay.sofa.ark.spi.argument.CommandArgument;
-
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
@@ -129,7 +128,9 @@ public abstract class AbstractLauncher {
     protected ClassLoader createContainerClassLoader(ContainerArchive containerArchive)
                                                                                        throws Exception {
         List<URL> classpath = getExecutableArchive().getConfClasspath();
+
         classpath.addAll(Arrays.asList(containerArchive.getUrls()));
+        //        classpath.addAll(Arrays.asList(ClassLoaderUtils.getAgentClassPath()));
         return createContainerClassLoader(classpath.toArray(new URL[] {}), null);
     }
 

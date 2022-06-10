@@ -16,6 +16,8 @@
  */
 package com.alipay.sofa.ark.spi.web;
 
+import java.util.Map;
+
 /**
  * Fetch embed tomcat container in ark
  *
@@ -23,15 +25,11 @@ package com.alipay.sofa.ark.spi.web;
  * @since 0.6.0
  */
 public interface EmbeddedServerService<T> {
-    /**
-     * get embed tomcat
-     * @return
-     */
-    T getEmbedServer();
 
-    /**
-     * set embed tomcat
-     * @param container
-     */
-    void setEmbedServer(T container);
+    T getEmbedServer(int port);
+
+    Map<Integer, T> getEmbedServerMap();
+
+    void setEmbedServer(int port, T container);
+
 }

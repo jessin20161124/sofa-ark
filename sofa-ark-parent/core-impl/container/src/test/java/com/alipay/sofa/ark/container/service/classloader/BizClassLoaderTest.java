@@ -17,30 +17,30 @@
 package com.alipay.sofa.ark.container.service.classloader;
 
 import com.alipay.sofa.ark.api.ArkClient;
+import com.alipay.sofa.ark.bootstrap.ArkAgentClassLoader;
 import com.alipay.sofa.ark.common.util.ClassUtils;
 import com.alipay.sofa.ark.common.util.StringUtils;
 import com.alipay.sofa.ark.container.BaseTest;
-import com.alipay.sofa.ark.container.testdata.ITest;
 import com.alipay.sofa.ark.container.model.BizModel;
 import com.alipay.sofa.ark.container.model.PluginModel;
 import com.alipay.sofa.ark.container.service.ArkServiceContainerHolder;
+import com.alipay.sofa.ark.container.testdata.ITest;
 import com.alipay.sofa.ark.spi.model.BizState;
 import com.alipay.sofa.ark.spi.service.biz.BizManagerService;
 import com.alipay.sofa.ark.spi.service.classloader.ClassLoaderService;
 import com.alipay.sofa.ark.spi.service.plugin.PluginDeployService;
 import com.alipay.sofa.ark.spi.service.plugin.PluginManagerService;
 import com.google.common.collect.Sets;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import sun.misc.URLClassPath;
-
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collections;
-import java.io.IOException;
-import java.util.*;
+import java.util.Enumeration;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import sun.misc.URLClassPath;
 
 /**
  * @author ruoshan
@@ -113,7 +113,7 @@ public class BizClassLoaderTest extends BaseTest {
             .setDenyImportResources("").setDenyImportClasses("");
         bizManagerService.registerBiz(bizModel);
         Class clazz = bizModel.getBizClassLoader().loadClass("SampleClass");
-        Assert.assertFalse(clazz.getClassLoader() instanceof AgentClassLoader);
+        Assert.assertFalse(clazz.getClassLoader() instanceof ArkAgentClassLoader);
         Assert.assertTrue(clazz.getClassLoader().getClass().getCanonicalName()
             .contains("Launcher.AppClassLoader"));
     }

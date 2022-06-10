@@ -16,11 +16,21 @@
  */
 package com.alipay.sofa.ark.springboot.web;
 
+import static com.alipay.sofa.ark.spi.constant.Constants.ROOT_WEB_CONTEXT_PATH;
+
 import com.alipay.sofa.ark.common.util.AssertUtils;
 import com.alipay.sofa.ark.spi.model.Biz;
 import com.alipay.sofa.ark.spi.service.ArkInject;
 import com.alipay.sofa.ark.spi.service.biz.BizManagerService;
 import com.alipay.sofa.ark.spi.web.EmbeddedServerService;
+import java.io.File;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import javax.servlet.ServletContainerInitializer;
 import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
 import org.apache.catalina.Host;
@@ -43,17 +53,6 @@ import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
-
-import javax.servlet.ServletContainerInitializer;
-import java.io.File;
-import java.net.URL;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import static com.alipay.sofa.ark.spi.constant.Constants.ROOT_WEB_CONTEXT_PATH;
 
 /**
  * @author Phillip Webb
@@ -84,12 +83,13 @@ public class ArkTomcatServletWebServerFactory extends TomcatServletWebServerFact
 
     @Override
     public WebServer getWebServer(ServletContextInitializer... initializers) {
+        int port = getPort();
         if (embeddedServerService == null) {
             return super.getWebServer(initializers);
-        } else if (embeddedServerService.getEmbedServer() == null) {
-            embeddedServerService.setEmbedServer(initEmbedTomcat());
+        } else if (embeddedServerService.getEmbedServer(port) == null) {
+            embeddedServerService.setEmbedServer(port, initEmbedTomcat());
         }
-        Tomcat embedTomcat = embeddedServerService.getEmbedServer();
+        Tomcat embedTomcat = embeddedServerService.getEmbedServer(port);
         prepareContext(embedTomcat.getHost(), initializers);
         return getWebServer(embedTomcat);
     }

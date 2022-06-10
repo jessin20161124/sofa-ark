@@ -39,7 +39,24 @@ public class ContainerClassLoader extends URLClassLoader {
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         Handler.setUseFastConnectionExceptions(true);
         try {
-            return super.loadClass(name, resolve);
+            //            return super.loadClass(name, resolve);
+            try {
+                return super.loadClass(name, resolve);
+            } catch (ClassNotFoundException e) {
+            }
+            try {
+                // System.out.println("load class error:" + name);
+                ClassLoader classLoader = ArkAgentClassLoader.getInstance();
+                classLoader.loadClass(name);
+                System.out.println("load class  : " + name + " from agent: " + classLoader);
+                return ClassLoader.getSystemClassLoader().loadClass(name);
+            } catch (ClassNotFoundException e) {
+                throw e;
+            } catch (Exception e) {
+                System.out.println("fail to load from agent " + e);
+                throw new RuntimeException("fail to load ", e);
+            }
+
         } finally {
             Handler.setUseFastConnectionExceptions(false);
         }

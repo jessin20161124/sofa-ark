@@ -20,8 +20,10 @@ import com.alipay.sofa.ark.springboot.condition.ConditionalOnArkEnabled;
 import com.alipay.sofa.ark.springboot.processor.ArkEventHandlerProcessor;
 import com.alipay.sofa.ark.springboot.processor.ArkServiceInjectProcessor;
 import com.alipay.sofa.ark.springboot.web.ArkTomcatServletWebServerFactory;
+import javax.servlet.Servlet;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.coyote.UpgradeProtocol;
+import org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -32,8 +34,6 @@ import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.servlet.Servlet;
-
 /**
  * @author qilong.zql
  * @since 0.6.0
@@ -41,6 +41,7 @@ import javax.servlet.Servlet;
 @Configuration
 @ConditionalOnArkEnabled
 @AutoConfigureBefore(ServletWebServerFactoryAutoConfiguration.class)
+@ManagementContextConfiguration
 public class ArkAutoConfiguration {
 
     @Bean

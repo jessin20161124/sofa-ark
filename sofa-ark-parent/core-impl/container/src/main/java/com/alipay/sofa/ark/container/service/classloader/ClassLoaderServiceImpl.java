@@ -16,11 +16,11 @@
  */
 package com.alipay.sofa.ark.container.service.classloader;
 
+import com.alipay.sofa.ark.bootstrap.ArkAgentClassLoader;
 import com.alipay.sofa.ark.common.log.ArkLogger;
 import com.alipay.sofa.ark.common.log.ArkLoggerFactory;
 import com.alipay.sofa.ark.common.util.AssertUtils;
 import com.alipay.sofa.ark.common.util.ClassUtils;
-import com.alipay.sofa.ark.common.util.ClassLoaderUtils;
 import com.alipay.sofa.ark.exception.ArkRuntimeException;
 import com.alipay.sofa.ark.spi.constant.Constants;
 import com.alipay.sofa.ark.spi.model.Biz;
@@ -30,7 +30,6 @@ import com.alipay.sofa.ark.spi.service.classloader.ClassLoaderService;
 import com.alipay.sofa.ark.spi.service.plugin.PluginManagerService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -269,7 +268,7 @@ public class ClassLoaderServiceImpl implements ClassLoaderService {
     public void init() throws ArkRuntimeException {
         arkClassLoader = this.getClass().getClassLoader();
         systemClassLoader = ClassLoader.getSystemClassLoader();
-        agentClassLoader = createAgentClassLoader();
+        agentClassLoader = ArkAgentClassLoader.getInstance();
 
         ClassLoader extClassLoader = systemClassLoader;
         while (extClassLoader.getParent() != null) {
@@ -297,10 +296,6 @@ public class ClassLoaderServiceImpl implements ClassLoaderService {
     @Override
     public void dispose() throws ArkRuntimeException {
 
-    }
-
-    private ClassLoader createAgentClassLoader() throws ArkRuntimeException {
-        return new AgentClassLoader(ClassLoaderUtils.getAgentClassPath(), null);
     }
 
     @Override

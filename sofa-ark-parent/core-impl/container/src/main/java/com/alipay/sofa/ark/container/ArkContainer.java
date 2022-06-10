@@ -16,28 +16,34 @@
  */
 package com.alipay.sofa.ark.container;
 
+import static com.alipay.sofa.ark.spi.constant.Constants.ARK_CONF_FILE;
+import static com.alipay.sofa.ark.spi.constant.Constants.ARK_CONF_FILE_FORMAT;
+import static com.alipay.sofa.common.log.Constants.LOGGING_PATH_DEFAULT;
+import static com.alipay.sofa.common.log.Constants.LOG_ENCODING_PROP_KEY;
+import static com.alipay.sofa.common.log.Constants.LOG_PATH;
+import static com.alipay.sofa.common.log.Constants.UTF8_STR;
+
 import com.alipay.sofa.ark.api.ArkConfigs;
+import com.alipay.sofa.ark.bootstrap.ClasspathLauncher.ClassPathArchive;
 import com.alipay.sofa.ark.common.log.ArkLoggerFactory;
 import com.alipay.sofa.ark.common.util.AssertUtils;
 import com.alipay.sofa.ark.common.util.StringUtils;
+import com.alipay.sofa.ark.container.service.ArkServiceContainer;
 import com.alipay.sofa.ark.exception.ArkRuntimeException;
-import com.alipay.sofa.ark.loader.archive.ExplodedArchive;
-import com.alipay.sofa.ark.spi.argument.LaunchCommand;
 import com.alipay.sofa.ark.loader.ExecutableArkBizJar;
+import com.alipay.sofa.ark.loader.archive.ExplodedArchive;
 import com.alipay.sofa.ark.loader.archive.JarFileArchive;
 import com.alipay.sofa.ark.spi.archive.ExecutableArchive;
+import com.alipay.sofa.ark.spi.argument.LaunchCommand;
 import com.alipay.sofa.ark.spi.constant.Constants;
-import com.alipay.sofa.ark.spi.pipeline.PipelineContext;
-import com.alipay.sofa.ark.container.service.ArkServiceContainer;
 import com.alipay.sofa.ark.spi.pipeline.Pipeline;
-import com.alipay.sofa.ark.bootstrap.ClasspathLauncher.ClassPathArchive;
+import com.alipay.sofa.ark.spi.pipeline.PipelineContext;
 import com.alipay.sofa.common.log.MultiAppLoggerSpaceManager;
 import com.alipay.sofa.common.log.SpaceId;
 import com.alipay.sofa.common.log.SpaceInfo;
 import com.alipay.sofa.common.log.env.LogEnvUtils;
 import com.alipay.sofa.common.log.factory.LogbackLoggerSpaceFactory;
 import com.alipay.sofa.common.utils.ReportUtil;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -47,13 +53,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import static com.alipay.sofa.ark.spi.constant.Constants.ARK_CONF_FILE;
-import static com.alipay.sofa.ark.spi.constant.Constants.ARK_CONF_FILE_FORMAT;
-import static com.alipay.sofa.common.log.Constants.LOGGING_PATH_DEFAULT;
-import static com.alipay.sofa.common.log.Constants.LOG_ENCODING_PROP_KEY;
-import static com.alipay.sofa.common.log.Constants.LOG_PATH;
-import static com.alipay.sofa.common.log.Constants.UTF8_STR;
 
 /**
  * Ark Container Entry
@@ -84,6 +83,11 @@ public class ArkContainer {
             throw new ArkRuntimeException("Please provide suitable arguments to continue !");
         }
 
+        try {
+            Thread.sleep(10 * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         try {
             LaunchCommand launchCommand = LaunchCommand.parse(args);
             if (launchCommand.isExecutedByCommandLine()) {

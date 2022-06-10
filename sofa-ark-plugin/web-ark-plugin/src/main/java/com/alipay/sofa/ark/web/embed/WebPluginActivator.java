@@ -21,7 +21,7 @@ import com.alipay.sofa.ark.spi.model.PluginContext;
 import com.alipay.sofa.ark.spi.service.PluginActivator;
 import com.alipay.sofa.ark.spi.web.EmbeddedServerService;
 import com.alipay.sofa.ark.web.embed.tomcat.EmbeddedServerServiceImpl;
-import org.apache.catalina.LifecycleException;
+import java.util.Map;
 import org.apache.catalina.startup.Tomcat;
 
 /**
@@ -39,16 +39,16 @@ public class WebPluginActivator implements PluginActivator {
 
     @Override
     public void stop(PluginContext context) {
-        Tomcat webServer = null;
-        if (embeddedServerService.getEmbedServer() instanceof Tomcat) {
-            webServer = (Tomcat) embeddedServerService.getEmbedServer();
-        }
-        if (webServer != null) {
-            try {
-                webServer.destroy();
-            } catch (Exception ex) {
-                ArkLoggerFactory.getDefaultLogger().error("Unable to stop embedded Tomcat", ex);
+        Map<Integer, Object> embedServerMap = embeddedServerService.getEmbedServerMap();
+        embedServerMap.forEach((port, webServer) -> {
+            if (webServer instanceof Tomcat) {
+                try {
+                    ((Tomcat)webServer).destroy();
+                } catch (Exception ex) {
+                    ArkLoggerFactory.getDefaultLogger().error("Unable to stop embedded Tomcat:" + port, ex);
+                }
             }
-        }
+
+        });
     }
 }
